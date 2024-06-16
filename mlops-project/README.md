@@ -179,4 +179,4 @@ training:
   batch_size: 32
   learning_rate: 0.001
 Authors
-[Your Name]
+[Ali Gouda]
