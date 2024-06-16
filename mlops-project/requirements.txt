@@ -1,0 +1,11 @@
+pandas
+numpy
+scikit-learn
+tensorflow
+torch
+flask
+fastapi
+gunicorn
+docker
+pytest
+loguru

@@ -1,0 +1,12 @@
+data:
+  raw_path: data/raw/
+  processed_path: data/processed/
+
+model:
+  saved_path: models/saved_model/
+
+training:
+  epochs: 10
+  batch_size: 32
+  learning_rate: 0.001
+
