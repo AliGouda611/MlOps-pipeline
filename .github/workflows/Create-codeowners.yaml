@@ -1,9 +1,9 @@
-name: Setup CODEOWNERS and Branch Protection
+name: Setup Personal CODEOWNERS and Branch Protection
 
 on:
   create:
     branches:
-      - PRD  # Trigger when PRD branch is created
+      - dev  # Trigger on the creation of the dev branch
 
 jobs:
   setup-codeowners:
@@ -16,27 +16,20 @@ jobs:
     - name: Create CODEOWNERS file
       run: |
         echo "# This is a comment." > .github/CODEOWNERS
-        echo "# Each line is a file pattern followed by one or more owners." >> .github/CODEOWNERS
+        echo "# This file specifies code ownership for Ali Gouda." >> .github/CODEOWNERS
         echo "" >> .github/CODEOWNERS
-        echo "# These owners will be the default owners for everything in the repo." >> .github/CODEOWNERS
-        echo "* @Hossam-Hassan @rasha-al-kafoury-ibm @Ayman-Aly @Houssini" >> .github/CODEOWNERS
-        echo "" >> .github/CODEOWNERS
-        echo "# JS files ownership" >> .github/CODEOWNERS
-        echo "*.js @js-owner" >> .github/CODEOWNERS
-        echo "" >> .github/CODEOWNERS
-        echo "# Documentation files ownership" >> .github/CODEOWNERS
-        echo "/docs/* hossam.hassan@ibm.com Rasha.Al.Kafoury@ibm.com Ayman.Aly@ibm.com houssini@eg.ibm.com" >> .github/CODEOWNERS
+        echo "* AliGouda611" >> .github/CODEOWNERS  # Replace with your GitHub username
 
     - name: Commit CODEOWNERS file
       run: |
         git add .github/CODEOWNERS
-        git commit -m "Add CODEOWNERS file"
-        git push origin PRD
+        git commit -m "Add personal CODEOWNERS file"
+        git push origin dev  # Push to the dev branch
 
-    - name: Protect the PRD branch
+    - name: Protect the dev branch
       uses: octokit/request-action@v2.x
       with:
-        route: PATCH /repos/${{ github.repository }}/branches/PRD/protection
+        route: PATCH /repos/${{ github.repository }}/branches/dev/protection
         mediaType: '{"application/vnd.github.luke-cage-preview+json"}'
         data: |
           {
@@ -51,6 +44,4 @@ jobs:
     - name: Create a test pull request
       uses: peter-evans/create-pull-request@v5
       with:
-        branch: PRD
-        title: "Test pull request to confirm CODEOWNERS and branch protection"
-        body: "This PR is to test that CODEOWNERS and branch protection rules are working as expected."
+        branch: dev
