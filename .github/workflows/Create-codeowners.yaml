@@ -3,7 +3,7 @@ name: Setup Personal CODEOWNERS and Branch Protection
 on:
   create:
     branches:
-      - dev  # Trigger on the creation of the dev branch
+      - dev  # Trigger when the dev branch is created
 
 jobs:
   setup-codeowners:
@@ -13,12 +13,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Set up Git identity
+      run: |
+        git config --global user.name "Ali Gouda"
+        git config --global user.email "goudaali19@gmail.com"  # Set your GitHub email here
+
     - name: Create CODEOWNERS file
       run: |
         echo "# This is a comment." > .github/CODEOWNERS
         echo "# This file specifies code ownership for Ali Gouda." >> .github/CODEOWNERS
         echo "" >> .github/CODEOWNERS
-        echo "* AliGouda611" >> .github/CODEOWNERS  # Replace with your GitHub username
+        echo "* @goudaali19" >> .github/CODEOWNERS  # Replace with your GitHub username
 
     - name: Commit CODEOWNERS file
       run: |
@@ -45,3 +50,5 @@ jobs:
       uses: peter-evans/create-pull-request@v5
       with:
         branch: dev
+        title: "Test PR for personal CODEOWNERS and branch protection on dev"
+        body: "This is a test PR to confirm branch protection and CODEOWNERS for Ali Gouda on the dev branch."
