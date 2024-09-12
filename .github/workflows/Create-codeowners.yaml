@@ -1,0 +1,56 @@
+name: Setup CODEOWNERS and Branch Protection
+
+on:
+  create:
+    branches:
+      - PRD  # Trigger when PRD branch is created
+
+jobs:
+  setup-codeowners:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Create CODEOWNERS file
+      run: |
+        echo "# This is a comment." > .github/CODEOWNERS
+        echo "# Each line is a file pattern followed by one or more owners." >> .github/CODEOWNERS
+        echo "" >> .github/CODEOWNERS
+        echo "# These owners will be the default owners for everything in the repo." >> .github/CODEOWNERS
+        echo "* @Hossam-Hassan @rasha-al-kafoury-ibm @Ayman-Aly @Houssini" >> .github/CODEOWNERS
+        echo "" >> .github/CODEOWNERS
+        echo "# JS files ownership" >> .github/CODEOWNERS
+        echo "*.js @js-owner" >> .github/CODEOWNERS
+        echo "" >> .github/CODEOWNERS
+        echo "# Documentation files ownership" >> .github/CODEOWNERS
+        echo "/docs/* hossam.hassan@ibm.com Rasha.Al.Kafoury@ibm.com Ayman.Aly@ibm.com houssini@eg.ibm.com" >> .github/CODEOWNERS
+
+    - name: Commit CODEOWNERS file
+      run: |
+        git add .github/CODEOWNERS
+        git commit -m "Add CODEOWNERS file"
+        git push origin PRD
+
+    - name: Protect the PRD branch
+      uses: octokit/request-action@v2.x
+      with:
+        route: PATCH /repos/${{ github.repository }}/branches/PRD/protection
+        mediaType: '{"application/vnd.github.luke-cage-preview+json"}'
+        data: |
+          {
+            "required_pull_request_reviews": {
+              "required_approving_review_count": 1,
+              "require_code_owner_reviews": true
+            },
+            "enforce_admins": false,
+            "restrictions": null
+          }
+
+    - name: Create a test pull request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        branch: PRD
+        title: "Test pull request to confirm CODEOWNERS and branch protection"
+        body: "This PR is to test that CODEOWNERS and branch protection rules are working as expected."
