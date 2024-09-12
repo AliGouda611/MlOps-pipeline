@@ -1,0 +1,54 @@
+name: Setup Personal CODEOWNERS and Branch Protection
+
+on:
+  create:
+    branches:
+      - dev  # Trigger when the dev branch is created
+
+jobs:
+  setup-codeowners:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Git identity
+      run: |
+        git config --global user.name "AliGouda611"
+        git config --global user.email "goudaali19@gmail.com"  # Set your GitHub email here
+
+    - name: Create CODEOWNERS file
+      run: |
+        echo "# This is a comment." > .github/CODEOWNERS
+        echo "# This file specifies code ownership for Ali Gouda." >> .github/CODEOWNERS
+        echo "" >> .github/CODEOWNERS
+        echo "* @AliGouda611" >> .github/CODEOWNERS  # Replace with your GitHub username
+
+    - name: Commit CODEOWNERS file
+      run: |
+        git add .github/CODEOWNERS
+        git commit -m "Add personal CODEOWNERS file"
+        git push origin dev  # Push to the dev branch
+
+    - name: Protect the dev branch
+      uses: octokit/request-action@v2.x
+      with:
+        route: PATCH /repos/${{ github.repository }}/branches/dev/protection
+        mediaType: '{"application/vnd.github.luke-cage-preview+json"}'
+        data: |
+          {
+            "required_pull_request_reviews": {
+              "required_approving_review_count": 1,
+              "require_code_owner_reviews": true
+            },
+            "enforce_admins": false,
+            "restrictions": null
+          }
+
+    - name: Create a test pull request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        branch: dev
+        title: "Test PR for personal CODEOWNERS and branch protection on dev"
+        body: "This is a test PR to confirm branch protection and CODEOWNERS for Ali Gouda on the dev branch."
